@@ -1,5 +1,5 @@
 # conmebol-api
-CONMEBOL API te permite obtener información de los resultados, clasificación y próximos partidos referentes a la clasificación de la CONMEBOL para la Copa América.
+CONMEBOL API te permite obtener información de los resultados, clasificación y próximos partidos referentes a la clasificación de la CONMEBOL para la Copa Mundial de Fútbol.
 
 los datos se obtienen de [onefootball](https://onefootball.com/en/home)
 
