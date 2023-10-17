@@ -12,62 +12,37 @@ def get_match_prox_or_live(_journeys: list, matches: BeautifulSoup):
     goals = [x.text for team in matches for x in team.find_all('span', 'SimpleMatchCardTeam_simpleMatchCardTeam__score__UYMc_')]
     match_dates = [x.find('time').get('datetime') if x.find('time') else x.text for team in matches for x in team.find_all('div', 'SimpleMatchCard_simpleMatchCard__matchContent__prwTf')]
     
-    team_counter = 0
-    date_index = 0
-    journey_index = 0
-    result_counter = 0
-    results = []
+    results = {}
+    for i in range(0, len(team_names), 2):
+        first_team = team_names[i]
+        second_team = team_names[i+1]
+        date = match_dates[i//2]
 
-    for i in range(len(team_names)):
-        team_counter += 1
+        if all(g == '' for g in [goals[i], goals[i+1]]):
+            data = NextMatches(
+                first_team=first_team,
+                second_team=second_team,
+                date=date
+            )
+            if _journeys[i//10] not in results:
+                results[_journeys[i//10]] = []
+            results[_journeys[i//10]].append(asdict(data))
+        else:
+            first_team = {'country': first_team, 'goals': goals[i]}
+            second_team = {'country': second_team, 'goals': goals[i+1]}
+            winner = 'Tie' if goals[i] == goals[i+1] else first_team if goals[i] > goals[i+1] else second_team
+            time = date
 
-        if team_counter == 10:
-            for j in range(i-9, i+1):
-                result_counter += 1
+            data = LiveMatches(
+                first_team=first_team,
+                second_team=second_team,
+                winner=winner,
+                time=time
+            )
+            if _journeys[i//10] not in results:
+                results[_journeys[i//10]] = []
+            results[_journeys[i//10]].append(asdict(data))
 
-                if result_counter == 2:
-                    if all(g == '' for g in [goals[j-1], goals[j]]):
-                        first_team = team_names[j-1]
-                        second_team = team_names[j]
-                        date = match_dates[date_index]
-
-                        data = NextMatches(
-                            first_team=first_team,
-                            second_team=second_team,
-                            date=date
-                        )
-
-                        if _journeys[journey_index] not in results:
-                            results[_journeys[journey_index]] = []
-                        
-                        results[_journeys[journey_index]].append(asdict(data))
-
-                        date_index += 1
-                        result_counter = 0
-                    else:
-                        first_team = {'country': team_names[j-1], 'goals': goals[j-1]}
-                        second_team = {'country': team_names[j], 'goals': goals[j]}
-                        winner = 'Tie' if goals[j-1] == goals[j] else team_names[j-1] if goals[j-1] > goals[j] else team_names[j]
-                        time = match_dates[date_index]
-
-                        data = LiveMatches(
-                            first_team=first_team,
-                            second_team=second_team,
-                            winner=winner,
-                            time=time
-                        )
-
-                        if _journeys[journey_index] not in results:
-                            results[_journeys[journey_index]] = []
-                        
-                        results[_journeys[journey_index]].append(asdict(data))
-
-                        date_index += 1
-                        team_counter = 0
-            
-            journey_index += 1
-            team_counter = 0
-    
     return results
 
 class Matches(object):
