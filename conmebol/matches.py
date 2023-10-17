@@ -46,7 +46,7 @@ def get_match_prox_or_live(_journeys: list, matches: BeautifulSoup):
                         result_counter = 0
                     else:
                         first_team = {'country': team_names[j-1], 'goals': goals[j-1]}
-                        second_team = {'country': team_names[j-1], 'goals': goals[j-1]}
+                        second_team = {'country': team_names[j], 'goals': goals[j]}
                         winner = 'Tie' if goals[j-1] == goals[j] else team_names[j-1] if goals[j-1] > goals[j] else team_names[j]
                         time = match_dates[date_index]
 
