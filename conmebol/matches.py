@@ -16,7 +16,7 @@ def get_match_prox_or_live(_journeys: list, matches: BeautifulSoup):
     date_index = 0
     journey_index = 0
     result_counter = 0
-    results = {}
+    results = []
 
     for i in range(len(team_names)):
         team_counter += 1
